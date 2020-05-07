@@ -11,13 +11,21 @@ async function main() {
     const client = new MongoClient(url);
     await client.connect();
 
-    const results = await CirculationRepo.loadData(data);
-    assert.equal(data.length, results.insertedCount)
+    try {
+        const results = await CirculationRepo.loadData(data);
+        assert.equal(data.length, results.insertedCount)
 
-    await client.db(dbName).dropDatabase();
-    const admin = client.db(dbName).admin();
+        const getData = await CirculationRepo.get();
+        assert.equal(data.length, getData.length);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        // Droping database
+        await client.db(dbName).dropDatabase();
+        const admin = client.db(dbName).admin();
 
-    console.log("List of Database:::", await admin.listDatabases());
+        console.log("List of Database:::", await admin.listDatabases());
+    }
 }
 
 main();

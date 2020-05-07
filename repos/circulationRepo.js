@@ -4,6 +4,23 @@ function circularRepo() {
     const url = 'mongodb://localhost:27017';
     const dbName = 'circulation';
 
+    function get() {
+        return new Promise(async(resolve, reject) => {
+            const client = new MongoClient(url);
+
+            try {
+                await client.connect();
+                const db = client.db(dbName);
+
+                const items = db.collection('newspapers').find();
+
+                resolve(await items.toArray());
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
     function loadData(data) {
         return new Promise(async (resolve, reject) => {
             const client = new MongoClient(url);
@@ -21,7 +38,7 @@ function circularRepo() {
         })
     }
 
-    return { loadData }
+    return { loadData, get }
 }
 
 module.exports = circularRepo();
