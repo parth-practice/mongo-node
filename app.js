@@ -17,6 +17,11 @@ async function main() {
 
         const getData = await CirculationRepo.get();
         assert.equal(data.length, getData.length);
+
+        const filterData = await CirculationRepo.get({Newspaper: getData[4].Newspaper});
+        assert.deepEqual(filterData[0], getData[4]);
+
+        console.log("FilterData::", filterData);
     } catch (error) {
         console.log(error);
     } finally {
